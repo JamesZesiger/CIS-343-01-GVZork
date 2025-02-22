@@ -2,6 +2,7 @@
 // 2/18/2025
 
 #include "Item.hpp"
+#include "Location.hpp"
 #include "NPC.hpp"
 #include <iostream>
 
@@ -37,8 +38,8 @@ int main(int argc, char** argv){
     NPC David("David", "A Comp-Sci student at GV who is always early.");
     NPC Eve("Eve", "A Comp-Sci student at GV who is always on time.");
     //Create Locations
-
-
+    
+    Location Library("Library", "There's lots of books in here.")
 
     //Create Inventory
     std::vector<Item> inventory;
@@ -52,6 +53,7 @@ int main(int argc, char** argv){
     NPC Kevin("Kevin", "A normal Comp-Sci student at GV.");
     std::cout << Kevin << std::endl;
     printInventory(inventory);
-
+    
+    std::cout << Library<< std::endl;
 
 }

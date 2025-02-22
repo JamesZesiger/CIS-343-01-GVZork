@@ -16,6 +16,13 @@
 class Location {
         public:
             Location(std::string name, std::string description) {
+                if (name.empty()) {
+                    throw std::invalid_argument("Name cannot be blank.");
+                }
+
+                if (description.empty()) {
+                    throw std::invalid_argument("Description cannot be blank.");
+                }
 
                 this->name = name;
                 this->description = description;
@@ -38,10 +45,40 @@ class Location {
                 return this->description;
             }
 
-            std::map<string, Location> getLocations() {
+            std::map<std::string, Location> getLocations() {
                 return neighbors;
             }
 
+            void addLocation(std::string direction, Location location) {
+                if (direction.empty()) {
+                    throw std::invalid_argument("Invalid direction, try again.");
+                }
+                // Add a check if key already exists in map and raises exception.
+            }
+
+            void addNPC(NPC npc) {
+                npcs.push_back(npc);
+            }
+
+            std::vector<NPC> getNPCs() {
+                return npcs;
+            }
+
+            void addItem(Item item) {
+                items.push_back(item);
+            }
+
+            std::vector<Item> getItems() {
+                return items;
+            }
+
+            void setVisited() {
+                visited = true;
+            }
+
+            bool getVisited() {
+                return this->visited;
+            }
 
 
             friend std::ostream& operator<<(std::ostream& os, const Location& location) {
