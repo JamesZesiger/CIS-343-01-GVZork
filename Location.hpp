@@ -10,6 +10,7 @@
 #include <vector>
 #include <functional>
 #include <map>
+#include <algorithm>
 #include "NPC.hpp"
 #include "Item.hpp"
 
@@ -53,7 +54,10 @@ class Location {
                 if (direction.empty()) {
                     throw std::invalid_argument("Invalid direction, try again.");
                 }
-                // Add a check if key already exists in map and raises exception.
+                
+                if (neighbors.find(direction) != neighbors.end()) {
+                    throw std::invalid_argument("Location already exists in that direction.");
+                }
             }
 
             void addNPC(NPC npc) {
