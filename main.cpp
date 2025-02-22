@@ -4,24 +4,40 @@
 #include "Item.hpp"
 #include "NPC.hpp"
 #include <iostream>
+#include <algorithm>
 
-void printInventory(std::vector<Item> inventory){
-    for(auto it=inventory.begin(); it != inventory.end(); it++){
-        std::cout << *it << std::endl;
-    }
-}
-
-void addInventory(std::vector<Item> inventory, Item item){
-    inventory.push_back(item);
-}
-
-void removeInventory(std::vector<Item> inventory, Item item){
-    for(auto it=inventory.begin(); it != inventory.end(); it++){
-        if(*it == item){
-            inventory.erase(it);
-            break;
+void printInventory(std::vector<std::reference_wrapper<Item>> inventory){
+    if (inventory.size() > 0){
+        for (int i = 0; i < inventory.size(); i++){
+            std::cout << inventory[i].get().getName() << std::endl;
         }
     }
+    else{
+        std::cout << "Inventory is empty." << std::endl;
+    }
+}
+
+void addInventory(std::vector<std::reference_wrapper<Item>> &inv, Item item, float capacity){
+    if ((capacity + item.getWeight())  < 30){
+        inv.push_back(item);
+        capacity += item.getWeight();
+        std::cout << item.getName() + " added to inventory" << std::endl;
+    }
+    else{
+        std::cout << "Inventory is full." << std::endl;
+    }
+}
+
+void removeInventory(std::vector<std::reference_wrapper<Item>> &inv, Item item, float capacity){
+    for (int i = 0; i < inv.size(); i++){
+        if (inv[i].get().getName() == item.getName()){
+            inv.erase(inv.begin() + i);
+            capacity -= item.getWeight();
+            std::cout << item.getName() + " removed from inventory" << std::endl;
+            return;
+        }   
+    }
+    std::cout << item.getName() + " not found in inventory" << std::endl;
 }
 
 int main(int argc, char** argv){
@@ -36,22 +52,27 @@ int main(int argc, char** argv){
     NPC Charlie("Charlie", "A Comp-Sci student at GV who is always late.");
     NPC David("David", "A Comp-Sci student at GV who is always early.");
     NPC Eve("Eve", "A Comp-Sci student at GV who is always on time.");
+    NPC Elf("Elf","A magical creature that is hungry.");
     //Create Locations
 
 
 
     //Create Inventory
-    std::vector<Item> inventory;
+    std::vector<std::reference_wrapper<Item>> inventory;
+    float inventory_capacity = 0;
 
 
     
-
+    
     Item nail("Rusty Nail", "A rusty nail (I hope you've had a tetanus shot)", 0, 1.0);
     std::cout << nail << std::endl;
-    inventory.push_back(nail);
+    addInventory(inventory, nail, inventory_capacity);
     NPC Kevin("Kevin", "A normal Comp-Sci student at GV.");
     std::cout << Kevin << std::endl;
     printInventory(inventory);
-
+    addInventory(inventory, Apple, inventory_capacity);
+    addInventory(inventory, Bread, inventory_capacity);
+    removeInventory(inventory, nail, inventory_capacity);
+    printInventory(inventory);
 
 }
