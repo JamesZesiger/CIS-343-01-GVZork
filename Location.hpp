@@ -58,6 +58,8 @@ class Location {
                 if (neighbors.find(direction) != neighbors.end()) {
                     throw std::invalid_argument("Location already exists in that direction.");
                 }
+
+                neighbors[direction] = location;
             }
 
             void addNPC(NPC npc) {
@@ -86,7 +88,15 @@ class Location {
 
 
             friend std::ostream& operator<<(std::ostream& os, const Location& location) {
-                os << location.name << " - " << location.description;
+                os << location.name << " - " << location.description << "\n";
+                
+                if (!location.npcs.empty()) {
+                    os << "You see the following NPCs:\n";
+                    for
+                }
+
+
+
                 return os;
             }
 
