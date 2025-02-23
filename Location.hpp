@@ -4,6 +4,7 @@
 #ifndef         __HPP__LOCATION__
 #define         __HPP__LOCATION__
 
+#include <memory>
 #include <iostream>
 #include <string>
 #include <stdexcept>
@@ -46,18 +47,18 @@ class Location {
                 return this->description;
             }
 
-            std::map<std::string, Location> getLocations() {
+            std::map<std::string, std::shared_ptr<Location>>& getLocations() {
                 return neighbors;
             }
 
             void addLocation(std::string direction, Location location) {
                 if (direction.empty()) {
-                    throw std::invalid_argument("Invalid direction, try again.");
+                    throw std::invalid_argument("Direction cannot be blank.");
                 }
-                
+
                 if (neighbors.find(direction) != neighbors.end()) {
                     throw std::invalid_argument("Location already exists in that direction.");
-                }
+            }
 
                 neighbors[direction] = location;
             }
@@ -92,10 +93,28 @@ class Location {
                 
                 if (!location.npcs.empty()) {
                     os << "You see the following NPCs:\n";
-                    for
+                    for (auto& npc : location.npcs) {
+                        os << "- " << npc.getName() << "\n";
+                    }
                 }
 
+                if (!location.items.empty()) {
+                    os << "You see the following Items:\n";
+                    for (auto& item : location.items) {
+                        os << "- " << item.getName() << " (" << item.getCalories() << " calories) - " << item.getWeight() << " lbs - " << item.getDescription() << ".\n";
+                    }
+                }
 
+                os << "You can go in the following directions:\n";
+
+                for (auto& pair : location.neighbors) {
+                    os << "- " << pair.first << " - " << pair.second->getName();
+                    if (pair.second->getVisited()) {
+                        os << " (Visited)";
+                    }
+
+                    os << "\n";
+                }             
 
                 return os;
             }
