@@ -60,7 +60,7 @@ class Location {
                     throw std::invalid_argument("Location already exists in that direction.");
             }
 
-                neighbors[direction] = location;
+                neighbors.insert(std::pair<std::string, Location>(direction, location));
             }
 
             void addNPC(NPC npc) {
