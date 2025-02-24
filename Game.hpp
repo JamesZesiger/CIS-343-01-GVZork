@@ -14,7 +14,6 @@ class Game {
         Game() {
             create_world();
             this->commands = setup_commands();
-            this->current_location = random_location();
             this->calories = 0;
             this->gameOver = false;
 
@@ -106,49 +105,20 @@ class Game {
 
         }
 
-        std::map<std::string, void(*)(std::vector<std::string>)> setup_commands() {
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("quit", &Game::quit));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("exit", &Game::quit));
-
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("look", &Game::look));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("examine", &Game::look));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("inspect", &Game::look));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("search", &Game::look));
-
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("show_items", &Game::show_items));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("show", &Game::show_items));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("inventory", &Game::show_items));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("inv", &Game::show_items));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("items", &Game::show_items));
-
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("go", &Game::go));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("move", &Game::go));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("walk", &Game::go));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("travel", &Game::go));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("head", &Game::go));
-
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("give", &Game::give));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("drop", &Game::give));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("put", &Game::give));
-
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("meet", &Game::meet));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("who", &Game::meet));
-
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("talk", &Game::talk));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("speak", &Game::talk));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("ask", &Game::talk));
-
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("take", &Game::take));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("grab", &Game::take));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("pick", &Game::take));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("pickup", &Game::take));
-
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("help", &Game::show_help));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("?", &Game::show_help));
-            commands.insert(std::pair<std::string, void(*)(std::vector<std::string>)>("commands", &Game::show_help));
-
-            return this->commands;
+        std::map<std::string, std::function<void(std::vector<std::string>)>> setup_commands() {
+            std::map<std::string, std::function<void(std::vector<std::string>)>> commands;
+            commands["quit"] = [this](std::vector<std::string> target) { quit(); };
+            commands["look"] = [this](std::vector<std::string> target) { look(target); };
+            commands["show items"] = [this](std::vector<std::string> target) { show_items(target); };
+            commands["go"] = [this](std::vector<std::string> target) { go(target); };
+            commands["give"] = [this](std::vector<std::string> target) { give(target); };
+            commands["meet"] = [this](std::vector<std::string> target) { meet(target); };
+            commands["talk"] = [this](std::vector<std::string> target) { talk(target[0]); };
+            commands["take"] = [this](std::vector<std::string> target) { take(target[0]); };
+            commands["help"] = [this](std::vector<std::string> target) { show_help(); };
+            return commands;
         }
+            
         
         void play() {
             bool gameOver = false;
@@ -192,11 +162,11 @@ class Game {
         }
 
     private:
-        std::map<std::string, void(*)(std::vector<std::string>)> commands;
         std::vector<Item> items;
+        std::map<std::string, std::function<void(std::vector<std::string>)>> commands;
         std::vector<Location> locations;
         int weight;
-        Location current_location;
+        Location current_location = random_location();
         int calories;
         bool gameOver;
 };
