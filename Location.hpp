@@ -47,7 +47,7 @@ class Location {
                 return this->description;
             }
 
-            std::map<std::string, std::shared_ptr<Location>>& getLocations() {
+            std::map<std::string, Location> get_Locations() {
                 return neighbors;
             }
 
@@ -93,24 +93,24 @@ class Location {
                 
                 if (!location.npcs.empty()) {
                     os << "You see the following NPCs:\n";
-                    for (auto& npc : location.npcs) {
+                    for (auto npc : location.npcs) {
                         os << "- " << npc.getName() << "\n";
                     }
                 }
 
                 if (!location.items.empty()) {
                     os << "You see the following Items:\n";
-                    for (auto& item : location.items) {
+                    for (auto item : location.items) {
                         os << "- " << item.getName() << " (" << item.getCalories() << " calories) - " << item.getWeight() << " lbs - " << item.getDescription() << ".\n";
                     }
                 }
 
                 os << "You can go in the following directions:\n";
 
-                for (auto& pair : location.neighbors) {
-                    os << "- " << pair.first << " - " << pair.second->getName();
-                    if (pair.second->getVisited()) {
-                        os << " (Visited)";
+                for (auto neighbor : location.neighbors) {
+                    os << "- " << neighbor.first << " to " << neighbor.second.getName() << "\n";
+                    if (neighbor.second.getVisited()) {
+                        os << "You have visited this location before.\n";
                     }
 
                     os << "\n";
