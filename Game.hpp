@@ -16,8 +16,7 @@ class Game {
             this->commands = setup_commands();
             this->calories = 0;
             this->gameOver = false;
-            Location tmp = random_location();
-	    this->current_location = tmp;
+            this-> current_location = random_location();
         }
 
         void create_world() {
@@ -68,11 +67,12 @@ class Game {
         }
 
         void quit() {
-
+            std::cout << "Goodbye!" << std::endl;
+            gameOver = true;
         } 
 
         void look(std::vector<std::string> target) {
-            
+            std::cout << current_location << std::endl;
         }
 
         void show_items(std::vector<std::string> target) {
@@ -123,8 +123,6 @@ class Game {
             
         
         void play() {
-            bool gameOver = false;
-
             std::cout << "Welcome to GVZORK I" << std::endl;
             std::cout << "Developed for CIS 343 at GVSU" << std::endl;
             std::cout << "Authors: Jared Bradley, Connor Valley, and James Zesiger" << std::endl;
@@ -132,7 +130,7 @@ class Game {
 
 	    std::cout << this->current_location << std::endl;
 
-            while (!gameOver) {
+            while (!this->gameOver) {
                 // Game loop
                 std::string input;
                 std::cout << "> ";
@@ -159,7 +157,11 @@ class Game {
                 }
                 
                 std::cout << "Processing command: " << command << " on target " << target << std::endl;
-                break; // Placeholder for command processing
+                if (commands.find(command) != commands.end()) {
+                    commands[command](tokens);
+                } else {
+                    std::cout << "Invalid command." << std::endl;
+                }
             }
         }
 
@@ -167,12 +169,11 @@ class Game {
         std::vector<Item> items;
         std::map<std::string, std::function<void(std::vector<std::string>)>> commands;
         std::vector<Location> locations;
-    	Location current_location = Location("test", "test location");
+    
+        Location current_location = Location("tmp", "tmp");
         int weight;
         int calories;
         bool gameOver;
 };
-
-
 
 #endif
