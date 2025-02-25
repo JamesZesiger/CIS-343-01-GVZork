@@ -16,7 +16,8 @@ class Game {
             this->commands = setup_commands();
             this->calories = 0;
             this->gameOver = false;
-
+            Location current_location = random_location();
+            std::cout << current_location << std::endl;
         }
 
         void create_world() {
@@ -102,7 +103,7 @@ class Game {
         }
 
         Location random_location() {
-
+            return locations[rand() % locations.size()];
         }
 
         std::map<std::string, std::function<void(std::vector<std::string>)>> setup_commands() {
@@ -165,8 +166,8 @@ class Game {
         std::vector<Item> items;
         std::map<std::string, std::function<void(std::vector<std::string>)>> commands;
         std::vector<Location> locations;
+    
         int weight;
-        Location current_location = random_location();
         int calories;
         bool gameOver;
 };
