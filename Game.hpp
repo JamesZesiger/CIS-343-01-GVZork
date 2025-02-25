@@ -16,8 +16,8 @@ class Game {
             this->commands = setup_commands();
             this->calories = 0;
             this->gameOver = false;
-            Location current_location = random_location();
-            std::cout << current_location << std::endl;
+            Location tmp = random_location();
+	    this->current_location = tmp;
         }
 
         void create_world() {
@@ -35,6 +35,7 @@ class Game {
             NPC David("David", "A Comp-Sci student at GV who is always early.");
             NPC Eve("Eve", "A Comp-Sci student at GV who is always on time.");
             NPC Elf("Elf","A magical creature that is hungry.");
+
             //Create Locations 
             Location Library("Library", "There's lots of books in here.");
             Location Kirkoff_one("Kirkoff Main Level", "Student Union, there is a restaurant, \
@@ -129,7 +130,7 @@ class Game {
             std::cout << "Authors: Jared Bradley, Connor Valley, and James Zesiger" << std::endl;
             std::cout << "This is a text-based adventure game." << std::endl;
 
-            std::cout << "<placeholder for starting scenario>" << std::endl;
+	    std::cout << this->current_location << std::endl;
 
             while (!gameOver) {
                 // Game loop
@@ -166,7 +167,7 @@ class Game {
         std::vector<Item> items;
         std::map<std::string, std::function<void(std::vector<std::string>)>> commands;
         std::vector<Location> locations;
-    
+    	Location current_location = Location("test", "test location");
         int weight;
         int calories;
         bool gameOver;
