@@ -76,31 +76,41 @@ class Game {
         }
 
         void show_items(std::vector<std::string> target) {
-
+            std::cout << "You have the following items:" << std::endl;
         }
 
         void go(std::vector<std::string> target) {
-
+            std::cout << "You go to " << target[0] << std::endl;
         }
 
         void give(std::vector<std::string> target) {
-
+            std::cout << "You give " << target[0] << " to " << target[0] << std::endl;
         }
 
         void meet(std::vector<std::string> target) {
-
+            std::cout << "You meet " << target[0] << std::endl;
         }
 
         void talk(std::string target) {
-
+            std::cout << "You talk to " << target << std::endl;
         }
 
         void take(std::string target) {
-
+            std::cout << "You take " << target << std::endl;
         }
 
         void show_help() {
-        
+            std::cout << "Available commands:" << std::endl;
+            for (const auto& command : commands) {
+                std::cout << command.first << std::endl;
+            }
+            std::cout << "Type 'help' for a list of commands." << std::endl;
+            std::cout << "Type 'quit' or 'exit' to quit the game." << std::endl;
+            std::cout << "Type 'look' to look around." << std::endl;
+            std::cout << "Type 'show_items' to show your items." << std::endl;
+            std::cout << "Type 'go' to go to a location." << std::endl;
+            std::cout << "Type 'give' to give an item to a NPC." << std::endl;
+            std::cout << "Type 'meet' to meet a NPC." << std::endl;
         }
 
         Location random_location() {
@@ -110,14 +120,46 @@ class Game {
         std::map<std::string, std::function<void(std::vector<std::string>)>> setup_commands() {
             std::map<std::string, std::function<void(std::vector<std::string>)>> commands;
             commands["quit"] = [this](std::vector<std::string> target) { quit(); };
+            commands["exit"] = [this](std::vector<std::string> target) { quit(); };
+
             commands["look"] = [this](std::vector<std::string> target) { look(target); };
-            commands["show items"] = [this](std::vector<std::string> target) { show_items(target); };
+            commands["examine"] = [this](std::vector<std::string> target) { look(target); };
+            commands["inspect"] = [this](std::vector<std::string> target) { look(target); };
+            commands["search"] = [this](std::vector<std::string> target) { look(target); };
+
+            commands["show_items"] = [this](std::vector<std::string> target) { show_items(target); };
+            commands["inventory"] = [this](std::vector<std::string> target) { show_items(target); };
+            commands["show"] = [this](std::vector<std::string> target) { show_items(target); };
+            commands["items"] = [this](std::vector<std::string> target) { show_items(target); };
+
             commands["go"] = [this](std::vector<std::string> target) { go(target); };
+            commands["move"] = [this](std::vector<std::string> target) { go(target); };
+            commands["travel"] = [this](std::vector<std::string> target) { go(target); };
+            commands["walk"] = [this](std::vector<std::string> target) { go(target); };
+            commands["head"] = [this](std::vector<std::string> target) { go(target); };
+
             commands["give"] = [this](std::vector<std::string> target) { give(target); };
+            commands["drop"] = [this](std::vector<std::string> target) { give(target); };
+
             commands["meet"] = [this](std::vector<std::string> target) { meet(target); };
+            commands["who"] = [this](std::vector<std::string> target) { meet(target); };
+
+
             commands["talk"] = [this](std::vector<std::string> target) { talk(target[0]); };
+            commands["speak"] = [this](std::vector<std::string> target) { talk(target[0]); };
+            commands["ask"] = [this](std::vector<std::string> target) { talk(target[0]); };
+            commands["chat"] = [this](std::vector<std::string> target) { talk(target[0]); };
+
             commands["take"] = [this](std::vector<std::string> target) { take(target[0]); };
+            commands["grab"] = [this](std::vector<std::string> target) { take(target[0]); };
+            commands["pick_up"] = [this](std::vector<std::string> target) { take(target[0]); };
+            commands["pick"] = [this](std::vector<std::string> target) { take(target[0]); };
+
+
             commands["help"] = [this](std::vector<std::string> target) { show_help(); };
+            commands["commands"] = [this](std::vector<std::string> target) { show_help(); };
+            commands["?"] = [this](std::vector<std::string> target) { show_help(); };
+
             return commands;
         }
             
