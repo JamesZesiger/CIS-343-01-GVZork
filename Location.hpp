@@ -80,7 +80,7 @@ class Location {
             }
 
             void setVisited() {
-                visited = true;
+                this->visited = true;
             }
 
             bool getVisited() {
@@ -108,13 +108,13 @@ class Location {
                 os << "You can go in the following directions:\n";
 
                 for (auto neighbor : location.neighbors) {
-                    os << "- " << neighbor.first << " to " << neighbor.second.getName() << "\n";
+                    os << "- " << neighbor.first;
                     if (neighbor.second.getVisited()) {
-                        os << "You have visited this location before.\n";
+                        os << " - " << neighbor.second.getName() << " (You have visited this location before.)\n";
+                    } else {
+                        os << " - Unknown\n";
                     }
-
-                    os << "\n";
-                }             
+                }
 
                 return os;
             }

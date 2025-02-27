@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <random>
 #include "Item.hpp"
 #include "Location.hpp"
 #include "NPC.hpp"
@@ -40,32 +41,36 @@ class Game {
             Bob.setMessage("Bob: Hi, I'm Bob. I'm a Comp-Sci student at GV.");
             Eve.setMessage("Eve: Hi, I'm Eve. I'm a Comp-Sci student at GV. I love the Kirkoff Center!");
 
-            //Create Locations 
+            //Create Locations  
             Location Library("Library", "There's lots of books in here.");
-            Location Kirkoff_one("Kirkoff Main Level", "Student Union, there is a restaurant, \
-                a coffee shop, and study spaces.\
-                 There are stairs to the second floor.");
-            Location Kirkoff_two("Kirkoff Second Floor", "There are large rooms and study spaces here.");
+            Location Kirkoff("Kirkoff Center", "Student Union, there is a restaurant, a coffee shop, and study spaces.");
             Location Padnos("Padnos Hall", "There are many classrooms here.");
             Location Rec_Center("Recreation Center", "There is a pool, a gym, and basketball courts here.");
 
+            //Set up location neighbors (map)
+            Library.addLocation("east", Kirkoff);
+            Library.addLocation("north", Padnos);
+            Kirkoff.addLocation("west", Library);
+            Padnos.addLocation("south", Library);
+            Padnos.addLocation("west", Rec_Center);
+            Rec_Center.addLocation("east", Padnos);
+
             //Add items to locations
             Library.addItem(Apple);
-            Kirkoff_one.addItem(LoMein);
+            Kirkoff.addItem(LoMein);
             Padnos.addItem(Bread);
 
             //Add NPCs to locations
             Library.addNPC(Bob);
             Library.addNPC(Alice);
-            Kirkoff_one.addNPC(Elf);
+            Kirkoff.addNPC(Elf);
             Rec_Center.addNPC(Charlie);
             Padnos.addNPC(David);
             Padnos.addNPC(Eve);
             
             
             this->locations.push_back(Library);
-            this->locations.push_back(Kirkoff_one);
-            this->locations.push_back(Kirkoff_two);
+            this->locations.push_back(Kirkoff);
             this->locations.push_back(Padnos);
             this->locations.push_back(Rec_Center);
 
@@ -85,7 +90,18 @@ class Game {
         }
 
         void go(std::vector<std::string> target) {
-            std::cout << "You go to " << target[0] << std::endl;
+            std::map<std::string, Location> neighbors = current_location.get_Locations();
+            for (auto word : target) {
+                if (neighbors.find(toLowercase(word)) != neighbors.end()) {
+                    current_location = neighbors.at(toLowercase(word));
+                    std::cout << "You go " << toLowercase(word) << std::endl;
+                    std::cout << current_location << std::endl;
+                    current_location.setVisited();
+                    return;
+                }
+            }
+
+            std::cout << "You can't go that way." << std::endl;
         }
 
         void give(std::vector<std::string> target) {
@@ -129,7 +145,10 @@ class Game {
         }
 
         Location random_location() {
-            return locations[rand() % locations.size()];
+            std::mt19937 engine (std::random_device{}());
+            std::uniform_int_distribution<int> dist(0, locations.size() - 1);
+            int random_index = dist(engine);
+            return locations[random_index];
         }
 
         std::map<std::string, std::function<void(std::vector<std::string>)>> setup_commands() {
@@ -180,12 +199,15 @@ class Game {
             
         
         void play() {
-            std::cout << "Welcome to GVZORK I" << std::endl;
+            // std::cout << "Welcome to GVZORK I" << std::endl;
+            printASCIIart();
+
             std::cout << "Developed for CIS 343 at GVSU" << std::endl;
             std::cout << "Authors: Jared Bradley, Connor Valley, and James Zesiger" << std::endl;
             std::cout << "This is a text-based adventure game." << std::endl;
 
-	    std::cout << this->current_location << std::endl;
+	        std::cout << this->current_location << std::endl;
+            current_location.setVisited();
 
             while (!this->gameOver) {
                 // Game loop
@@ -232,6 +254,29 @@ class Game {
                 c = tolower(c);
             }
             return str;
+        }
+
+        void printASCIIart() {
+            // ASCII art made using https://patorjk.com/
+            std::cout << "888       888          888                                                   888            " << std::endl;
+            std::cout << "888   o   888          888                                                   888            " << std::endl;
+            std::cout << "888  d8b  888          888                                                   888            " << std::endl;
+            std::cout << "888 d888b 888  .d88b.  888  .d8888b .d88b.  88888b.d88b.   .d88b.            888888 .d88b.  " << std::endl;
+            std::cout << "888d88888b888 d8P  Y8b 888 d88P'   d88''88b 888 '888 '88b d8P  Y8b           888   d88''88b " << std::endl;
+            std::cout << "88888P Y88888 88888888 888 888     888  888 888  888  888 88888888           888   888  888 " << std::endl;
+            std::cout << "8888P   Y8888 Y8b.     888 Y88b.   Y88..88P 888  888  888 Y8b.               Y88b. Y88..88P " << std::endl;
+            std::cout << "888P     Y888  'Y8888  888  'Y8888P 'Y88P'  888  888  888  '8888             'Y888 'Y88P'   " << std::endl;                                                                                           
+            std::cout << "                                                                                            " << std::endl;                                                                                        
+                                                                                                        
+            std::cout << ".d8888b.  888     888      8888888888P  .d88888b.  8888888b.  888    d8P                    " << std::endl;
+            std::cout << "d88P  Y88b 888     888            d88P  d88P' 'Y88b 888   Y88b 888   d8P                    " << std::endl;
+            std::cout << "888    888 888     888           d88P   888     888 888    888 888  d8P                     " << std::endl;
+            std::cout << "888        Y88b   d88P          d88P    888     888 888   d88P 888d88K                      " << std::endl;
+            std::cout << "888  88888  Y88b d88P          d88P     888     888 8888888P'  8888888b                     " << std::endl;
+            std::cout << "888    888   Y88o88P          d88P      888     888 888 T88b   888  Y88b                    " << std::endl;
+            std::cout << "Y88b  d88P    Y888P          d88P       Y88b. .d88P 888  T88b  888   Y88b                   " << std::endl;
+            std::cout << "'Y8888P88     Y8P          d8888888888  'Y88888P'  888   T88b 888    Y88b                   " << std::endl; 
+            std::cout << "                                                                                            " << std::endl;
         }
 };
 
