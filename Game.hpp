@@ -7,6 +7,7 @@
 #include <map>
 #include "Item.hpp"
 #include "Location.hpp"
+#include "NPC.hpp"
 
 class Game {
 
@@ -34,6 +35,10 @@ class Game {
             NPC David("David", "A Comp-Sci student at GV who is always early.");
             NPC Eve("Eve", "A Comp-Sci student at GV who is always on time.");
             NPC Elf("Elf","A magical creature that is hungry.");
+
+            //Set NPC messages
+            Bob.setMessage("Bob: Hi, I'm Bob. I'm a Comp-Sci student at GV.");
+            Eve.setMessage("Eve: Hi, I'm Eve. I'm a Comp-Sci student at GV. I love the Kirkoff Center!");
 
             //Create Locations 
             Location Library("Library", "There's lots of books in here.");
@@ -91,8 +96,18 @@ class Game {
             std::cout << "You meet " << target[0] << std::endl;
         }
 
-        void talk(std::string target) {
-            std::cout << "You talk to " << target << std::endl;
+        void talk(std::vector<std::string> target) {
+            std::vector<NPC> npcs = current_location.getNPCs();
+            for (auto npc : npcs) {
+                std::string npc_name = npc.getName();
+                for (auto word : target) {
+                    if (toLowercase(word) == toLowercase(npc_name)) {
+                        std::cout << npc.getMessage() << std::endl;
+                        return;
+                    }
+                }
+            }
+            std::cout << "You don't see that person here." << std::endl;
         }
 
         void take(std::string target) {
@@ -145,10 +160,10 @@ class Game {
             commands["who"] = [this](std::vector<std::string> target) { meet(target); };
 
 
-            commands["talk"] = [this](std::vector<std::string> target) { talk(target[0]); };
-            commands["speak"] = [this](std::vector<std::string> target) { talk(target[0]); };
-            commands["ask"] = [this](std::vector<std::string> target) { talk(target[0]); };
-            commands["chat"] = [this](std::vector<std::string> target) { talk(target[0]); };
+            commands["talk"] = [this](std::vector<std::string> target) { talk(target); };
+            commands["speak"] = [this](std::vector<std::string> target) { talk(target); };
+            commands["ask"] = [this](std::vector<std::string> target) { talk(target); };
+            commands["chat"] = [this](std::vector<std::string> target) { talk(target); };
 
             commands["take"] = [this](std::vector<std::string> target) { take(target[0]); };
             commands["grab"] = [this](std::vector<std::string> target) { take(target[0]); };
@@ -193,12 +208,7 @@ class Game {
 
                 std::string command = tokens[0];
                 tokens.erase(tokens.begin()); // Remove the command from the tokens
-                std::string target;
-                for (const auto& token : tokens) {
-                    target += token + " ";
-                }
                 
-                std::cout << "Processing command: " << command << " on target " << target << std::endl;
                 if (commands.find(command) != commands.end()) {
                     commands[command](tokens);
                 } else {
@@ -216,6 +226,13 @@ class Game {
         int weight;
         int calories;
         bool gameOver;
+
+        std::string toLowercase(std::string& str) {
+            for (auto& c : str) {
+                c = tolower(c);
+            }
+            return str;
+        }
 };
 
 #endif

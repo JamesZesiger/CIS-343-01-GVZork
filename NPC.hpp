@@ -52,6 +52,13 @@ class NPC {
                 return currentMessage;
             }
 
+            void setMessage(std::string message) {
+                if (message.empty()) {
+                    throw std::invalid_argument("Message cannot be blank.");
+                }
+                messages.push_back(message);
+            }
+
             friend std::ostream& operator<<(std::ostream& os, const NPC& npc) {
                 os << npc.name;
                 return os;
