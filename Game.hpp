@@ -46,14 +46,9 @@ class Game {
             Location Kirkoff("Kirkoff Center", "Student Union, there is a restaurant, a coffee shop, and study spaces.");
             Location Padnos("Padnos Hall", "There are many classrooms here.");
             Location Rec_Center("Recreation Center", "There is a pool, a gym, and basketball courts here.");
+            Location Forest("Forest", "It is magical and full of life.");
 
-            //Set up location neighbors (map)
-            Library.addLocation("east", Kirkoff);
-            Library.addLocation("north", Padnos);
-            Kirkoff.addLocation("west", Library);
-            Padnos.addLocation("south", Library);
-            Padnos.addLocation("west", Rec_Center);
-            Rec_Center.addLocation("east", Padnos);
+
 
             //Add items to locations
             Library.addItem(Apple);
@@ -69,11 +64,13 @@ class Game {
             Padnos.addNPC(Eve);
             
             
-            this->locations.push_back(Library);
-            this->locations.push_back(Kirkoff);
-            this->locations.push_back(Padnos);
-            this->locations.push_back(Rec_Center);
-
+            this->locations.push_back(std::reference_wrapper<Location>(Library));
+            this->locations.push_back(std::reference_wrapper<Location>(Kirkoff));
+            this->locations.push_back(std::reference_wrapper<Location>(Padnos));
+            this->locations.push_back(std::reference_wrapper<Location>(Forest));
+            this->locations.push_back(std::reference_wrapper<Location>(Rec_Center));
+            this->locations[0].addLocation("north", locations[1]);
+   
         }
 
         void quit() {
@@ -86,7 +83,14 @@ class Game {
         }
 
         void show_items(std::vector<std::string> target) {
-            std::cout << "You have the following items:" << std::endl;
+            if (items.size() > 0){
+                for (int i = 0; i < items.size(); i++){
+                    std::cout << items[i] << std::endl;
+                }
+            }
+            else{
+                std::cout << "Inventory is empty." << std::endl;
+            }
         }
 
         void go(std::vector<std::string> target) {
@@ -105,7 +109,19 @@ class Game {
         }
 
         void give(std::vector<std::string> target) {
-            std::cout << "You give " << target[0] << " to " << target[0] << std::endl;
+           for (auto item : items) {
+                std::string name = item.getName();
+                if (toLowercase(name) == toLowercase(target[0])) {
+                    current_location.addItem(item);
+                    items.erase(items.begin() + 1);
+                    std::cout << "You dropped " << item.getName() << std::endl;
+                }
+                else {
+                    std::cout << "You don't have that item." << std::endl;
+                }     
+
+            }
+            
         }
 
         void meet(std::vector<std::string> target) {
@@ -127,7 +143,16 @@ class Game {
         }
 
         void take(std::string target) {
-            std::cout << "You take " << target << std::endl;
+            
+            for (auto item : current_location.getItems()) {
+                std::string name = item.getName();
+                if (toLowercase(name) == toLowercase(target)) {
+                    std::cout << "You take the " << item.getName() << std::endl;
+                    this->items.push_back(item);
+                    return;
+                }
+            }
+            std::cout << "You don't see that item here." << std::endl;
         }
 
         void show_help() {
