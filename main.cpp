@@ -1,4 +1,4 @@
-// Jared Bradley
+// Authors: Jared Bradley, Connor Valley, and James Zesiger
 // 2/18/2025
 
 #include "Game.hpp"

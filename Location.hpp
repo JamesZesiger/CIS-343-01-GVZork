@@ -1,4 +1,4 @@
-// Jared Bradley
+// Authors: Jared Bradley, Connor Valley, and James Zesiger
 // 2/19/2025
 
 #ifndef         __HPP__LOCATION__
@@ -57,6 +57,7 @@ class Location {
                 }
 
                 if (neighbors.find(direction) != neighbors.end()) {
+                    std::cerr << "Error: Attempted to add a location in an occupied direction (" << direction << "). Existing location: " << neighbors[direction].getName() << std::endl;
                     throw std::invalid_argument("Location already exists in that direction.");
             }
 
@@ -86,8 +87,8 @@ class Location {
             bool getVisited() {
                 return this->visited;
             }
-
-
+            
+            
             friend std::ostream& operator<<(std::ostream& os, const Location& location) {
                 os << location.name << " - " << location.description << "\n";
                 

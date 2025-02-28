@@ -1,3 +1,5 @@
+// Authors: Jared Bradley, Connor Valley, and James Zesiger
+// 2/20/25
 #ifndef         __GAME_HPP__
 #define         __GAME_HPP__
 
