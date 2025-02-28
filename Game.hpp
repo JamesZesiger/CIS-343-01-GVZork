@@ -64,12 +64,15 @@ class Game {
             Padnos.addNPC(Eve);
             
             
-            this->locations.push_back(std::reference_wrapper<Location>(Library));
-            this->locations.push_back(std::reference_wrapper<Location>(Kirkoff));
-            this->locations.push_back(std::reference_wrapper<Location>(Padnos));
-            this->locations.push_back(std::reference_wrapper<Location>(Forest));
-            this->locations.push_back(std::reference_wrapper<Location>(Rec_Center));
+            this->locations.push_back(Library);
+            this->locations.push_back(Kirkoff);
+            this->locations.push_back(Padnos);
+            this->locations.push_back(Forest);
+            this->locations.push_back(Rec_Center);
+
             this->locations[0].addLocation("north", locations[1]);
+            this->locations[1].addLocation("south", locations[0]);
+
    
         }
 
@@ -95,18 +98,18 @@ class Game {
 
         void go(std::vector<std::string> target) {
             std::map<std::string, Location> neighbors = current_location.get_Locations();
-            for (auto word : target) {
-                if (neighbors.find(toLowercase(word)) != neighbors.end()) {
-                    current_location = neighbors.at(toLowercase(word));
-                    std::cout << "You go " << toLowercase(word) << std::endl;
-                    std::cout << current_location << std::endl;
-                    current_location.setVisited();
+            
+            auto neighbor = neighbors.find(target[0]);
+            std::cout << neighbor->second.getName() << std::endl;
+            if (neighbor != neighbors.end()) {
+                if(int i = std::find(locations.begin(), locations.end(), neighbor->second) != locations.end()){
+                    current_location = locations[i];
                     return;
+                    }
                 }
-            }
-
             std::cout << "You can't go that way." << std::endl;
         }
+
 
         void give(std::vector<std::string> target) {
            for (auto item : items) {
@@ -173,7 +176,7 @@ class Game {
             std::mt19937 engine (std::random_device{}());
             std::uniform_int_distribution<int> dist(0, locations.size() - 1);
             int random_index = dist(engine);
-            return locations[random_index];
+            return locations[0];
         }
 
         std::map<std::string, std::function<void(std::vector<std::string>)>> setup_commands() {
