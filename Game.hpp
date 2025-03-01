@@ -1,5 +1,3 @@
-// Authors: Jared Bradley, Connor Valley, and James Zesiger
-// 2/20/25
 #ifndef         __GAME_HPP__
 #define         __GAME_HPP__
 
@@ -69,12 +67,10 @@ class Game {
             this->locations.push_back(Library);
             this->locations.push_back(Kirkoff);
             this->locations.push_back(Padnos);
-            this->locations.push_back(Forest);
             this->locations.push_back(Rec_Center);
-
+            this->locations.push_back(Forest);
             this->locations[0].addLocation("north", locations[1]);
             this->locations[1].addLocation("south", locations[0]);
-
    
         }
 
@@ -100,18 +96,19 @@ class Game {
 
         void go(std::vector<std::string> target) {
             std::map<std::string, Location> neighbors = current_location.get_Locations();
-            
-            auto neighbor = neighbors.find(target[0]);
-            std::cout << neighbor->second.getName() << std::endl;
-            if (neighbor != neighbors.end()) {
-                if(int i = std::find(locations.begin(), locations.end(), neighbor->second) != locations.end()){
-                    current_location = locations[i];
-                    return;
+                if (neighbors.find(toLowercase(target[0])) != neighbors.end()) {
+                    for(int i=0; i<locations.size(); i++){
+                        std::string name = neighbors.at(toLowercase(target[0])).getName();
+                        if(locations[i].getName() == name){
+                            current_location = locations[i];
+                            std::cout << current_location << std::endl;
+                            return;
+                        }
                     }
-                }
+            }
+
             std::cout << "You can't go that way." << std::endl;
         }
-
 
         void give(std::vector<std::string> target) {
            for (auto item : items) {
