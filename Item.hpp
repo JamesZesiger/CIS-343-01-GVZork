@@ -1,5 +1,5 @@
-// Jared Bradley
-// 2/18/2025
+// Authors: Jared Bradley, Connor Valley, and James Zesiger
+// 2/20/25
 
 #ifndef         __HPP__ITEM__
 #define         __HPP__ITEM__
