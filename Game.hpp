@@ -31,6 +31,14 @@ class Game {
             Item Apple("Apple", "A delicious red apple", 1, 0.5);
             Item Bread("Bread", "A loaf of bread", 1, 1.0);
             Item LoMein("Lo Mein", "A cup of lo mein from Panda Express", 1, 2.0);
+            Item Stick("Stick", "A regular wooden stick", 0, 1.0);
+            Item Anvil("Anvil", "An iron anvil", 0, 50.0);
+            Item Turkey_Leg("Turkey Leg", "A delicious Turkey Leg", 10, 3.0);
+            Item Rusty_Nail("Rusty Nail", "A Rusty Nail, (I hope you had your tetanus shot)", 0, 1.0);
+            Item Fruit_Snacks("Fruit Snacks", "A package of assorted fruit snacks", 5, 1.0);
+            Item Banana("Banana", "A great source of potassium", 5, 3.0);
+            Item Steak("Steak", "A tasty hunk of beef", 15, 5.0);
+            Item Pizza("Pizza", "A simple peperoni pizza", 10, 4.0);
 
             //Create NPCs
             NPC Bob("Bob", "A normal Comp-Sci student at GV.");
@@ -54,12 +62,18 @@ class Game {
             Location Manitou("Manitou", "There's a lot of printers in here.");
             Location Mackinac("Mackinac", "There are lots of whiteboards with math equations.");
 
-
-
             //Add items to locations
             Library.addItem(Apple);
             Kirkoff.addItem(LoMein);
             Padnos.addItem(Bread);
+            Cafeteria.addItem(Steak);
+            Manitou.addItem(Banana);
+            Mackinac.addItem(Anvil);
+            Forest.addItem(Stick);
+            Rec_Center.addItem(Fruit_Snacks);
+            Forest.addItem(Rusty_Nail);
+            Cafeteria.addItem(Turkey_Leg);
+            Kirkoff.addItem(Pizza);
 
             //Add NPCs to locations
             Library.addNPC(Bob);
