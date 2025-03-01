@@ -50,6 +50,9 @@ class Game {
             Location Padnos("Padnos Hall", "There are many classrooms here.");
             Location Rec_Center("Recreation Center", "There is a pool, a gym, and basketball courts here.");
             Location Forest("Forest", "It is magical and full of life.");
+            Location Cafeteria("Cafeteria", "It smells like moldy cheese in here.");
+            Location Manitou("Manitou", "There's a lot of printers in here.");
+            Location Mackinac("Mackinac", "There are lots of whiteboards with math equations.");
 
 
 
@@ -72,14 +75,27 @@ class Game {
             this->locations.push_back(Padnos);
             this->locations.push_back(Rec_Center);
             this->locations.push_back(Forest);
+            this->locations.push_back(Cafeteria);
+            this->locations.push_back(Manitou);
+            this->locations.push_back(Mackinac);
             this->locations[0].addLocation("north", std::reference_wrapper<Location>(locations[1]));
             this->locations[1].addLocation("south",  std::reference_wrapper<Location>(locations[0]));
             this->locations[1].addLocation("east",  std::reference_wrapper<Location>(locations[2]));
+            this->locations[1].addLocation("north", std::reference_wrapper<Location>(locations[7]));
+            this->locations[1].addLocation("west", std::reference_wrapper<Location>(locations[5]));
             this->locations[2].addLocation("west",  std::reference_wrapper<Location>(locations[1]));
             this->locations[2].addLocation("north",  std::reference_wrapper<Location>(locations[3]));
             this->locations[3].addLocation("south",  std::reference_wrapper<Location>(locations[2]));
             this->locations[3].addLocation("east",  std::reference_wrapper<Location>(locations[4]));
+            this->locations[3].addLocation("west",  std::reference_wrapper<Location>(locations[7]));
             this->locations[4].addLocation("west",  std::reference_wrapper<Location>(locations[3]));
+            this->locations[5].addLocation("east",  std::reference_wrapper<Location>(locations[1]));
+            this->locations[5].addLocation("north",  std::reference_wrapper<Location>(locations[6]));
+            this->locations[6].addLocation("south",  std::reference_wrapper<Location>(locations[5]));
+            this->locations[6].addLocation("east",  std::reference_wrapper<Location>(locations[7]));
+            this->locations[7].addLocation("east",  std::reference_wrapper<Location>(locations[3]));
+            this->locations[7].addLocation("west",  std::reference_wrapper<Location>(locations[6]));
+            this->locations[7].addLocation("south",  std::reference_wrapper<Location>(locations[1]));
    
         }
 
