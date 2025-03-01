@@ -57,7 +57,6 @@ class Location {
                 }
 
                 if (neighbors.find(direction) != neighbors.end()) {
-                    std::cerr << "Error: Attempted to add a location in an occupied direction (" << direction << "). Existing location: " << neighbors[direction].getName() << std::endl;
                     throw std::invalid_argument("Location already exists in that direction.");
             }
 
