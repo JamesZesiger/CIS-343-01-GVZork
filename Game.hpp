@@ -69,8 +69,14 @@ class Game {
             this->locations.push_back(Padnos);
             this->locations.push_back(Rec_Center);
             this->locations.push_back(Forest);
-            this->locations[0].addLocation("north", locations[1]);
-            this->locations[1].addLocation("south", locations[0]);
+            this->locations[0].addLocation("north", std::reference_wrapper<Location>(locations[1]));
+            this->locations[1].addLocation("south",  std::reference_wrapper<Location>(locations[0]));
+            this->locations[1].addLocation("east",  std::reference_wrapper<Location>(locations[2]));
+            this->locations[2].addLocation("west",  std::reference_wrapper<Location>(locations[1]));
+            this->locations[2].addLocation("north",  std::reference_wrapper<Location>(locations[3]));
+            this->locations[3].addLocation("south",  std::reference_wrapper<Location>(locations[2]));
+            this->locations[3].addLocation("east",  std::reference_wrapper<Location>(locations[4]));
+            this->locations[4].addLocation("west",  std::reference_wrapper<Location>(locations[3]));
    
         }
 
@@ -95,13 +101,19 @@ class Game {
         }
 
         void go(std::vector<std::string> target) {
-            std::map<std::string, Location> neighbors = current_location.get_Locations();
+            std::map<std::string, Location> neighbors = current_location.get_Locations();   
                 if (neighbors.find(toLowercase(target[0])) != neighbors.end()) {
                     for(int i=0; i<locations.size(); i++){
-                        std::string name = neighbors.at(toLowercase(target[0])).getName();
+                        std::string name = neighbors.at(target[0]).getName();
                         if(locations[i].getName() == name){
+                            locations[i].setVisited();
+                            for (int x = 0; x < locations.size(); x++){
+                                locations[x].updateLocation(locations[i]);
+                            }
+                            
                             current_location = locations[i];
                             std::cout << current_location << std::endl;
+                            
                             return;
                         }
                     }
@@ -115,7 +127,16 @@ class Game {
                 std::string name = item.getName();
                 if (toLowercase(name) == toLowercase(target[0])) {
                     current_location.addItem(item);
-                    items.erase(items.begin() + 1);
+                    for (int x = 0; x < locations.size(); x++){
+                        if (locations[x].getName() == current_location.getName()){
+                            locations[x].addItem(item);
+                        }
+                    }
+                    for(int i = 0; i < items.size(); i++) {
+                        if (items[i].getName() == item.getName()) {
+                            items.erase(items.begin() + i);
+                        }
+                    }
                     std::cout << "You dropped " << item.getName() << std::endl;
                 }
                 else {
@@ -145,17 +166,25 @@ class Game {
         }
 
         void take(std::string target) {
-            
-            for (auto item : current_location.getItems()) {
-                std::string name = item.getName();
-                if (toLowercase(name) == toLowercase(target)) {
-                    std::cout << "You take the " << item.getName() << std::endl;
-                    this->items.push_back(item);
-                    return;
+           for (int x = 0; x < locations.size(); x++){
+            if (locations[x].getName() == current_location.getName()){
+                std::vector<Item> loc_items = locations[x].getItems();
+                for (int i = 0; i < loc_items.size(); i++){
+                    std::string name = loc_items[i].getName();
+                    if (toLowercase(name) == toLowercase(target)){
+                        items.push_back(loc_items[i]);
+                        locations[x].removeItem(loc_items[i]);
+                        current_location.removeItem(loc_items[i]);
+                        std::cout << "You picked up " << target << std::endl;
+                    }
+                    else{
+                        std::cout << "You can't take that item." << std::endl;
+                    }
                 }
             }
-            std::cout << "You don't see that item here." << std::endl;
         }
+
+    }
 
         void show_help() {
             std::cout << "Available commands:" << std::endl;
@@ -175,7 +204,11 @@ class Game {
             std::mt19937 engine (std::random_device{}());
             std::uniform_int_distribution<int> dist(0, locations.size() - 1);
             int random_index = dist(engine);
-            return locations[0];
+            locations[random_index].setVisited();
+            for (int x = 0; x < locations.size(); x++){
+                locations[x].updateLocation(locations[random_index]);
+            }
+            return locations[random_index];
         }
 
         std::map<std::string, std::function<void(std::vector<std::string>)>> setup_commands() {

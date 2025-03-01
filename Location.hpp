@@ -62,6 +62,15 @@ class Location {
 
                 neighbors.insert(std::pair<std::string, Location>(direction, location));
             }
+            
+            void updateLocation(Location location) {
+                for(auto& neighbor : neighbors) {
+                    if (neighbor.second.getName() == location.getName()) {
+                        neighbor.second = location;
+                    }
+                }
+                          
+            }
 
             void addNPC(NPC npc) {
                 npcs.push_back(npc);
@@ -75,6 +84,15 @@ class Location {
                 items.push_back(item);
             }
 
+            void removeItem(Item item) {
+                for(int i = 0; i < items.size(); i++) {
+                    if (items[i].getName() == item.getName()) {
+                        items.erase(items.begin() + i);
+                        return;
+                    }
+                }
+            }
+            
             std::vector<Item> getItems() {
                 return items;
             }
