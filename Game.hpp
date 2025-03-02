@@ -132,11 +132,12 @@ class Game {
             else{
                 std::cout << "Inventory is empty." << std::endl;
             }
+            std::cout << "You are carrying " << weight << " lbs." << std::endl;
         }
 
         void go(std::vector<std::string> target) {
             if (weight > 30) {
-                std::cout << "Your carrying too much." << std::endl;
+                std::cout << "You're carrying too much." << std::endl;
                 return;
             }
             std::map<std::string, Location> neighbors = current_location.get_Locations();   
