@@ -232,6 +232,11 @@ class Game {
                 for (int i = 0; i < loc_items.size(); i++){
                     std::string name = loc_items[i].getName();
                     if (toLowercase(name) == toLowercase(target)){
+                        if (loc_items[i].getWeight() + weight > 30) {
+                            std::cout << "You can't carry that much weight." << std::endl;
+                            found = true;
+                            break;
+                        }
                         items.push_back(loc_items[i]);
                         locations[x].removeItem(loc_items[i]);
                         current_location.removeItem(loc_items[i]);
