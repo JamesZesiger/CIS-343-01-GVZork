@@ -127,6 +127,9 @@ class Location {
                         os << "- " << npc.getName() << "\n";
                     }
                 }
+                else {
+                    os << "You are alone." << "\n";
+                }
 
                 if (!location.items.empty()) {
                     os << "You see the following Items:\n";
