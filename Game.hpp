@@ -263,30 +263,30 @@ class Game {
             std::cout << "You don't see that person here." << std::endl;
         }
 
-        void take(std::string target) {
-           for (int x = 0; x < locations.size(); x++){
-            if (locations[x].getName() == current_location.getName()){
-                std::vector<Item> loc_items = locations[x].getItems();
-                bool found = false;
-                for (int i = 0; i < loc_items.size(); i++){
-                    std::string name = loc_items[i].getName();
-                    if (toLowercase(name) == toLowercase(target)){
-                        weight += loc_items[i].getWeight();
-                        items.push_back(loc_items[i]);
-                        locations[x].removeItem(loc_items[i]);
-                        current_location.removeItem(loc_items[i]);
-                        found = true;
-                        std::cout << "You picked up " << target << std::endl;
-                        break;
-                    }
-                }
-                if (!found) {
-                    std::cout << "You can't take that item." << std::endl;
-                }
-            }
-        }
-
-    }
+        void take(std::vector<std::string> target) {
+            for (int x = 0; x < locations.size(); x++){
+             if (locations[x].getName() == current_location.getName()){
+                 std::vector<Item> loc_items = locations[x].getItems();
+                 bool found = false;
+                 for (int i = 0; i < loc_items.size(); i++){
+                     std::string name = loc_items[i].getName();
+                     if (toLowercase(name) == toLowercase(target[0])){
+                         weight += loc_items[i].getWeight();
+                         items.push_back(loc_items[i]);
+                         locations[x].removeItem(loc_items[i]);
+                         current_location.removeItem(loc_items[i]);
+                         found = true;
+                         std::cout << "You picked up " << target[0] << std::endl;
+                         break;
+                     }
+                 }
+                 if (!found) {
+                     std::cout << "You can't take that item." << std::endl;
+                 }
+             }
+         }
+ 
+     }
 
         void show_help() {
             std::cout << "Available commands:" << std::endl;
@@ -378,7 +378,6 @@ class Game {
 
             commands["go"] = [this](std::vector<std::string> target) { go(target); };
             commands["move"] = [this](std::vector<std::string> target) { go(target); };
-            commands["travel"] = [this](std::vector<std::string> target) { go(target); };
             commands["walk"] = [this](std::vector<std::string> target) { go(target); };
             commands["head"] = [this](std::vector<std::string> target) { go(target); };
 
@@ -387,25 +386,22 @@ class Game {
 
             commands["meet"] = [this](std::vector<std::string> target) { meet(target); };
             commands["who"] = [this](std::vector<std::string> target) { meet(target); };
-            commands["talk"] = [this](std::vector<std::string> target) { meet(target); };
-            commands["speak"] = [this](std::vector<std::string> target) { meet(target); };
-            commands["chat"] = [this](std::vector<std::string> target) { meet(target); };
 
-            commands["take"] = [this](std::vector<std::string> target) { take(target[0]); };
-            commands["grab"] = [this](std::vector<std::string> target) { take(target[0]); };
-            commands["pick_up"] = [this](std::vector<std::string> target) { take(target[0]); };
-            commands["pick"] = [this](std::vector<std::string> target) { take(target[0]); };
+            commands["take"] = [this](std::vector<std::string> target) { take(target); };
+            commands["grab"] = [this](std::vector<std::string> target) { take(target); };
+            commands["pick_up"] = [this](std::vector<std::string> target) { take(target); };
+            commands["pick"] = [this](std::vector<std::string> target) { take(target); };
 
-            commands["steal"] = [this](std::vector<std::string> target) { steal(target); };
-            commands["rob"] = [this](std::vector<std::string> target) { steal(target); };
 
             commands["help"] = [this](std::vector<std::string> target) { show_help(); };
             commands["commands"] = [this](std::vector<std::string> target) { show_help(); };
             commands["?"] = [this](std::vector<std::string> target) { show_help(); };
 
+            commands["travel"] = [this](std::vector<std::string> target) { fastTravel(target); };
+            commands["teleport"] = [this](std::vector<std::string> target) { fastTravel(target); };
+
             return commands;
         }
-            
         
         void play() {
             // std::cout << "Welcome to GVZORK I" << std::endl;
@@ -451,6 +447,25 @@ class Game {
                     std::cout << "Invalid command." << std::endl;
                 }
             }
+        }
+        
+        void fastTravel(std::vector<std::string> target){
+            for (int i = 0; i < locations.size(); i++){
+                std::string name = locations[i].getName();
+                std::string trg = target[0];
+                if (toLowercase(name) == toLowercase(trg)){
+                    if (locations[i].getVisited()){
+                        current_location = locations[i];
+                        std::cout << current_location << std::endl;
+                        return;
+                    }
+                    else{
+                        std::cout << "You have not visited that location yet." << std::endl;
+                        return;
+                    }
+                }
+            }
+            std::cout << "Invalid location." << std::endl;
         }
 
     private:
