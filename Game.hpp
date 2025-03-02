@@ -289,17 +289,16 @@ class Game {
      }
 
         void show_help() {
-            std::cout << "Available commands:" << std::endl;
-            for (const auto& command : commands) {
-                std::cout << command.first << std::endl;
-            }
-            std::cout << "Type 'help' for a list of commands." << std::endl;
-            std::cout << "Type 'quit' or 'exit' to quit the game." << std::endl;
-            std::cout << "Type 'look' to look around." << std::endl;
-            std::cout << "Type 'show_items' to show your items." << std::endl;
-            std::cout << "Type 'go' to go to a location." << std::endl;
-            std::cout << "Type 'give' to give an item to a NPC." << std::endl;
-            std::cout << "Type 'meet' to meet a NPC." << std::endl;
+            std::cout << "Type 'help', 'commands, '?' for a list of commands." << std::endl;
+            std::cout << "Type 'quit', 'exit' to quit the game." << std::endl;
+            std::cout << "Type 'look', 'examine', 'inspect', 'search' to look around." << std::endl;
+            std::cout << "Type 'show_items', 'inventory', 'items', 'show' to show your items." << std::endl;
+            std::cout << "Type 'go', 'walk', 'head', 'move' to go in specified direction." << std::endl;
+            std::cout << "Type 'give', 'drop' to give an item to a NPC." << std::endl;
+            std::cout << "Type 'meet', 'talk', 'chat', 'speak' to meet a NPC." << std::endl;
+            std::cout << "Type 'take', 'grab', 'pick_up', 'pick' to take an item." << std::endl;
+            std::cout << "Type 'steal', 'rob' to steal an item from a NPC." << std::endl;
+            std::cout << "Type 'travel', 'teleport' to teleport to a specified visited location." << std::endl;
         }
 
         Location random_location() {
@@ -385,7 +384,9 @@ class Game {
             commands["drop"] = [this](std::vector<std::string> target) { give(target); };
 
             commands["meet"] = [this](std::vector<std::string> target) { meet(target); };
-            commands["who"] = [this](std::vector<std::string> target) { meet(target); };
+            commands["talk"] = [this](std::vector<std::string> target) { meet(target); };
+            commands["speak"] = [this](std::vector<std::string> target) { meet(target); };
+            commands["chat"] = [this](std::vector<std::string> target) { meet(target); };
 
             commands["take"] = [this](std::vector<std::string> target) { take(target); };
             commands["grab"] = [this](std::vector<std::string> target) { take(target); };
