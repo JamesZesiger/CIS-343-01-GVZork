@@ -135,10 +135,17 @@ class Game {
         } 
 
         void look(std::vector<std::string> target) {
-            std::vector<NPC> npcs = current_location.getNPCs();
-            std::vector<Item> items = current_location.getItems();
+            /**
+             * method that shows items, NPCs, and location description
+             * Parametes: target - vector of strings
+             * Returns: None
+             */
+
+            std::vector<NPC> npcs = current_location.getNPCs(); // Get NPCs in current location
+            std::vector<Item> items = current_location.getItems();  // Get items in current location
             if (target.size() > 0) {
-                for (auto word : target) {
+                for (auto word : target) {  
+                    // Prints NPCs description
                     for (auto npc : npcs) {
                         std::string npc_name = npc.getName();
                         if (toLowercase(word) == toLowercase(npc_name)) {
@@ -147,6 +154,7 @@ class Game {
                         }
                     }
                     for (auto item : items) {
+                        // Prints items description
                         std::string item_name = item.getName();
                         if (toLowercase(word) == toLowercase(item_name)) {
                             std::cout << item.getDescription() << std::endl;
@@ -155,37 +163,51 @@ class Game {
                     }
                 }
             }
-            std::cout << current_location << std::endl;
+            std::cout << current_location << std::endl; // Prints location description
         }
 
         void show_items(std::vector<std::string> target) {
+            /**
+             * method that shows items in inventory and weight of items
+             * Parametes: target - vector of strings (unsued)
+             * Returns: None
+             */
+
+            // Prints items in inventory if there are any items in inventory
             if (items.size() > 0){
                 for (int i = 0; i < items.size(); i++){
                     std::cout << items[i] << std::endl;
                 }
             }
-            else{
+            else{   // Inventory is empty
                 std::cout << "Inventory is empty." << std::endl;
             }
-            std::cout << "You are carrying " << weight << " lbs." << std::endl;
+            std::cout << "You are carrying " << weight << " lbs." << std::endl; // Prints weight of items in inventory
         }
 
         void go(std::vector<std::string> target) {
+            /**
+             * method that moves player to target location
+             * Parametes: target - vector of strings
+             * Returns: None
+             */
+
+            // Checks if player is carrying too much weight
             if (weight > 30) {
                 std::cout << "You're carrying too much." << std::endl;
                 return;
             }
-            std::map<std::string, Location> neighbors = current_location.get_Locations();   
-                if (neighbors.find(toLowercase(target[0])) != neighbors.end()) {
+            std::map<std::string, Location> neighbors = current_location.get_Locations();   // Get locations connected to current location
+                if (neighbors.find(toLowercase(target[0])) != neighbors.end()) {    // Finds if target location is connected to current location
                     for(int i=0; i<locations.size(); i++){
                         std::string name = neighbors.at(target[0]).getName();
                         if(locations[i].getName() == name){
-                            locations[i].setVisited();
+                            locations[i].setVisited();  // Sets location as visited
                             for (int x = 0; x < locations.size(); x++){
-                                locations[x].updateLocation(locations[i]);
+                                locations[x].updateLocation(locations[i]);  // Updates neighbors 
                             }
                             
-                            current_location = locations[i];
+                            current_location = locations[i];    // Sets current location to target location
                             std::cout << current_location << std::endl;
                             
                             return;
@@ -197,33 +219,39 @@ class Game {
         }
 
         void give(std::vector<std::string> target) {
+            /**
+             * method that drops item in location or give it to elf
+             * Parametes: target - vector of strings
+             * Returns: None
+             */
+
            for (auto item : items) {
                 std::string name = item.getName();
-                if (toLowercase(name) == toLowercase(target[0])) {
+                if (toLowercase(name) == toLowercase(target[0])) {  // Checks if item is in inventory
                     for (auto& loc : locations){
                         if (loc.getName() == current_location.getName()){
                             loc.addItem(item);
                             break;
                         }
                     }
-                    if (current_location.getName() == "Forest"){
-                        if (item.getCalories() > 0){
+                    if (current_location.getName() == "Forest"){    // Checks if current location is Forest
+                        if (item.getCalories() > 0){    // Checks if item is edible give elf item and reduce elfs calories
                             std::cout << "You gave the Elf a " << item.getName() << std::endl;
                             calories -= item.getCalories();
-                            for (auto& loc : locations){
+                            for (auto& loc : locations){    // removes items form locations
                                 if (loc.getName() == current_location.getName()){
                                     loc.removeItem(item);
                                     break;
                                 }
                             }
                             std::cout << "the elf needs " << calories << " more calories" << std::endl;
-                            if (calories <= 0){
+                            if (calories <= 0){ // ends game if elf is full
                                 std::cout << "The elf is full" << std::endl;
                                 gameOver = true;
                                 return;
                             }
                         }
-                        else{
+                        else{   // Item is inedible, elf teleports player to random location
                             
                             current_location = random_location();
                             std::cout << "The elf did not like that item. He teleports you to " << current_location.getName() << std::endl;
@@ -232,7 +260,7 @@ class Game {
                         } 
                     }
                         
-                    
+                    // remove item from inventory
                     for(int i = 0; i < items.size(); i++) {
                         if (items[i].getName() == item.getName()) {
                             weight -= item.getWeight();
@@ -249,6 +277,12 @@ class Game {
         }
 
         void meet(std::vector<std::string> target) {
+            /**
+             * method that prints NPC message
+             * Parametes: target - vector of strings
+             * Returns: None
+             */
+
             std::vector<NPC> npcs = current_location.getNPCs();
             for (auto npc : npcs) {
                 std::string npc_name = npc.getName();
@@ -263,16 +297,28 @@ class Game {
         }
 
         void take(std::vector<std::string> target) {
+            /**
+             * method that adds item to inventory
+             * Parametes: target - vector of strings
+             * Returns: None
+             */
+
             for (int x = 0; x < locations.size(); x++){
+                // get current location in locations vector
              if (locations[x].getName() == current_location.getName()){
-                 std::vector<Item> loc_items = locations[x].getItems();
-                 bool found = false;
-                 for (int i = 0; i < loc_items.size(); i++){
-                     std::string name = loc_items[i].getName();
-                     if (toLowercase(name) == toLowercase(target[0])){
+                // get items in current location
+                std::vector<Item> loc_items = locations[x].getItems();
+                bool found = false;
+                for (int i = 0; i < loc_items.size(); i++){
+                    std::string name = loc_items[i].getName();
+                    // check if item is the target
+                    if (toLowercase(name) == toLowercase(target[0])){
+                        // add item weight to carry weight
                          weight += loc_items[i].getWeight();
+                         // add item to inventory
                          items.push_back(loc_items[i]);
                          locations[x].removeItem(loc_items[i]);
+                         // remove item from location
                          current_location.removeItem(loc_items[i]);
                          found = true;
                          std::cout << "You picked up " << target[0] << std::endl;
@@ -288,6 +334,11 @@ class Game {
      }
 
         void show_help() {
+            /**
+             * method that prints available commands
+             * Parametes: None
+             * Returns: None
+             */
             std::cout << "Type 'help', 'commands, '?' for a list of commands." << std::endl;
             std::cout << "Type 'quit', 'exit' to quit the game." << std::endl;
             std::cout << "Type 'look', 'examine', 'inspect', 'search' to look around." << std::endl;
@@ -301,6 +352,12 @@ class Game {
         }
 
         Location random_location() {
+            /**
+             * method that returns random location in locations vector
+             * Parametes: None
+             * Returns: Location
+             */
+
             std::mt19937 engine (std::random_device{}());
             std::uniform_int_distribution<int> dist(0, locations.size() - 2);
             int random_index = dist(engine);
@@ -313,6 +370,12 @@ class Game {
         }
 
         void steal(std::vector<std::string> target) {
+            /**
+             * method that steals item from NPC
+             * Parametes: target - vector of strings
+             * Returns: None
+             */
+            
             std::mt19937 engine (std::random_device{}());
             std::uniform_int_distribution<int> dist(0, 100);
             int random_index = dist(engine);
@@ -360,43 +423,45 @@ class Game {
         }
 
         std::map<std::string, std::function<void(std::vector<std::string>)>> setup_commands() {
+            // Setup command aliases
             std::map<std::string, std::function<void(std::vector<std::string>)>> commands;
+            // quit commands
             commands["quit"] = [this](std::vector<std::string> target) { quit(); };
             commands["exit"] = [this](std::vector<std::string> target) { quit(); };
-
+            // look commands
             commands["look"] = [this](std::vector<std::string> target) { look(target); };
             commands["examine"] = [this](std::vector<std::string> target) { look(target); };
             commands["inspect"] = [this](std::vector<std::string> target) { look(target); };
             commands["search"] = [this](std::vector<std::string> target) { look(target); };
-
+            // show_items commands
             commands["show_items"] = [this](std::vector<std::string> target) { show_items(target); };
             commands["inventory"] = [this](std::vector<std::string> target) { show_items(target); };
             commands["show"] = [this](std::vector<std::string> target) { show_items(target); };
             commands["items"] = [this](std::vector<std::string> target) { show_items(target); };
-
+            // go commands
             commands["go"] = [this](std::vector<std::string> target) { go(target); };
             commands["move"] = [this](std::vector<std::string> target) { go(target); };
             commands["walk"] = [this](std::vector<std::string> target) { go(target); };
             commands["head"] = [this](std::vector<std::string> target) { go(target); };
-
+            // give commands
             commands["give"] = [this](std::vector<std::string> target) { give(target); };
             commands["drop"] = [this](std::vector<std::string> target) { give(target); };
-
+            // steal commands
             commands["meet"] = [this](std::vector<std::string> target) { meet(target); };
-            commands["talk"] = [this](std::vector<std::string> target) { meet(target); };
-            commands["speak"] = [this](std::vector<std::string> target) { meet(target); };
-            commands["chat"] = [this](std::vector<std::string> target) { meet(target); };
-
+            commands["who"] = [this](std::vector<std::string> target) { meet(target); };
+            // steal commands
             commands["take"] = [this](std::vector<std::string> target) { take(target); };
             commands["grab"] = [this](std::vector<std::string> target) { take(target); };
             commands["pick_up"] = [this](std::vector<std::string> target) { take(target); };
             commands["pick"] = [this](std::vector<std::string> target) { take(target); };
-
-
+            // steal commands
+            commands["steal"] = [this](std::vector<std::string> target) { steal(target); };
+            commands["rob"] = [this](std::vector<std::string> target) { steal(target); };
+            // help commands
             commands["help"] = [this](std::vector<std::string> target) { show_help(); };
             commands["commands"] = [this](std::vector<std::string> target) { show_help(); };
             commands["?"] = [this](std::vector<std::string> target) { show_help(); };
-
+            // fast travel commands
             commands["travel"] = [this](std::vector<std::string> target) { fastTravel(target); };
             commands["teleport"] = [this](std::vector<std::string> target) { fastTravel(target); };
 
@@ -404,6 +469,12 @@ class Game {
         }
         
         void play() {
+            /**
+             * method that runs the game
+             * Parametes: None
+             * Returns: None
+             */
+
             // std::cout << "Welcome to GVZORK I" << std::endl;
             printASCIIart();
 
@@ -450,6 +521,12 @@ class Game {
         }
         
         void fastTravel(std::vector<std::string> target){
+            /**
+             * method that teleports player to target location
+             * Parametes: target - vector of strings
+             * Returns: None
+             */
+
             for (int i = 0; i < locations.size(); i++){
                 std::string name = locations[i].getName();
                 std::string trg = target[0];
