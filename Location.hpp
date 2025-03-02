@@ -120,12 +120,14 @@ class Location {
 
             friend std::ostream& operator<<(std::ostream& os, const Location& location) {
                 os << location.name << " - " << location.description << "\n";
+                os << "\n";
                 
                 if (!location.npcs.empty()) {
                     os << "You see the following NPCs:\n";
                     for (auto npc : location.npcs) {
                         os << "- " << npc.getName() << "\n";
                     }
+                    os << "\n";
                 }
                 else {
                     os << "You are alone." << "\n";
@@ -136,6 +138,7 @@ class Location {
                     for (auto item : location.items) {
                         os << "- " << item.getName() << " (" << item.getCalories() << " calories) - " << item.getWeight() << " lbs - " << item.getDescription() << ".\n";
                     }
+                    os << "\n";
                 }
 
                 os << "You can go in the following directions:\n";
@@ -147,7 +150,9 @@ class Location {
                     } else {
                         os << " - Unknown\n";
                     }
+                
                 }
+                os << "*********************************";
 
                 return os;
             }
