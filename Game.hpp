@@ -19,7 +19,7 @@ class Game {
         Game() {
             create_world();
             this->commands = setup_commands();
-            this->calories = 0;
+            this->calories = 500;
             this->gameOver = false;
             this-> current_location = random_location();
         }
@@ -78,7 +78,7 @@ class Game {
             //Add NPCs to locations
             Library.addNPC(Bob);
             Library.addNPC(Alice);
-            Kirkoff.addNPC(Elf);
+            Forest.addNPC(Elf);
             Rec_Center.addNPC(Charlie);
             Padnos.addNPC(David);
             Padnos.addNPC(Eve);
@@ -160,6 +160,18 @@ class Game {
                 std::string name = item.getName();
                 if (toLowercase(name) == toLowercase(target[0])) {
                     current_location.addItem(item);
+                    if (current_location.getName() == "Forest"){
+                        std::cout << "You gave the Elf a " << item.getName() << std::endl;
+                        calories -= item.getCalories();
+                        if (calories <= 0){
+                            std::cout << "The elf is full" << std::endl;
+                            quit();
+                        }
+                        else{
+                            std::cout << "The elf needs " << calories << " more calories" << std::endl;
+                        }
+                    }
+                        
                     for (int x = 0; x < locations.size(); x++){
                         if (locations[x].getName() == current_location.getName()){
                             locations[x].addItem(item);
@@ -323,7 +335,11 @@ class Game {
 
                 std::string command = tokens[0];
                 tokens.erase(tokens.begin()); // Remove the command from the tokens
-                
+                if (tokens.size() > 1) {
+                    for (int x = 1; x < tokens.size(); x++){
+                        tokens[0] += " " + tokens[x];
+                    }
+                }
                 if (commands.find(command) != commands.end()) {
                     commands[command](tokens);
                 } else {
