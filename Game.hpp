@@ -48,6 +48,7 @@ class Game {
             NPC David("David", "A Comp-Sci student at GV who is always early.");
             NPC Eve("Eve", "A Comp-Sci student at GV who is always on time.");
             NPC Elf("Elf","A magical creature that is hungry.");
+            NPC Warden("Warden", "Prison Warden, stands in the corner watching you.");
 
             //Set NPC messages
             Bob.setMessage("Bob: Hi, I'm Bob. I'm a Comp-Sci student at GV.");
@@ -62,10 +63,11 @@ class Game {
             Location Cafeteria("Cafeteria", "It smells like moldy cheese in here.");
             Location Manitou("Manitou", "There's a lot of printers in here.");
             Location Mackinac("Mackinac", "There are lots of whiteboards with math equations.");
+            Location Jail("Jail", "You are in an empty cell. There is a guard watching you.");
 
             //Add items to locations
             Library.addItem(Apple);
-            Kirkoff.addItem(LoMein);
+            Kirkoff.addItem(Pizza);
             Padnos.addItem(Bread);
             Cafeteria.addItem(Steak);
             Manitou.addItem(Banana);
@@ -76,14 +78,13 @@ class Game {
             Cafeteria.addItem(Turkey_Leg);
             Kirkoff.addItem(Pizza);
 
-            //Add NPCs to locations
-            Library.addNPC(Bob);
-            Library.addNPC(Alice);
-            Forest.addNPC(Elf);
-            Rec_Center.addNPC(Charlie);
-            Padnos.addNPC(David);
-            Padnos.addNPC(Eve);
-            
+            //Add items to NPCs
+            Bob.addItem(Apple);
+            Alice.addItem(Bread);
+            Charlie.addItem(LoMein);
+            David.addItem(Steak);
+            Eve.addItem(Pizza);
+            Elf.addItem(Turkey_Leg);
             
             this->locations.push_back(Library);
             this->locations.push_back(Kirkoff);
@@ -93,7 +94,20 @@ class Game {
             this->locations.push_back(Cafeteria);
             this->locations.push_back(Manitou);
             this->locations.push_back(Mackinac);
+            this->locations.push_back(Jail);
+
+            //Add items to NPCs in locations
+            this->locations[0].addNPC(Bob);
+            this->locations[0].addNPC(Alice);
+            this->locations[1].addNPC(Eve);
+            this->locations[2].addNPC(David);
+            this->locations[3].addNPC(Charlie);
+            this->locations[4].addNPC(Elf);
+            this->locations[8].addNPC(Warden);
+            
+            //Add locations to each other
             this->locations[0].addLocation("north", std::reference_wrapper<Location>(locations[1]));
+            this->locations[0].addLocation("south", std::reference_wrapper<Location>(locations[8]));
             this->locations[1].addLocation("south",  std::reference_wrapper<Location>(locations[0]));
             this->locations[1].addLocation("east",  std::reference_wrapper<Location>(locations[2]));
             this->locations[1].addLocation("north", std::reference_wrapper<Location>(locations[7]));
@@ -111,6 +125,8 @@ class Game {
             this->locations[7].addLocation("east",  std::reference_wrapper<Location>(locations[3]));
             this->locations[7].addLocation("west",  std::reference_wrapper<Location>(locations[6]));
             this->locations[7].addLocation("south",  std::reference_wrapper<Location>(locations[1]));
+            this->locations[8].addLocation("north",  std::reference_wrapper<Location>(locations[0]));
+
    
         }
 
@@ -120,6 +136,26 @@ class Game {
         } 
 
         void look(std::vector<std::string> target) {
+            std::vector<NPC> npcs = current_location.getNPCs();
+            std::vector<Item> items = current_location.getItems();
+            if (target.size() > 0) {
+                for (auto word : target) {
+                    for (auto npc : npcs) {
+                        std::string npc_name = npc.getName();
+                        if (toLowercase(word) == toLowercase(npc_name)) {
+                            std::cout << npc.getDescription() << std::endl;
+                            return;
+                        }
+                    }
+                    for (auto item : items) {
+                        std::string item_name = item.getName();
+                        if (toLowercase(word) == toLowercase(item_name)) {
+                            std::cout << item.getDescription() << std::endl;
+                            return;
+                        }
+                    }
+                }
+            }
             std::cout << current_location << std::endl;
         }
 
@@ -214,10 +250,6 @@ class Game {
         }
 
         void meet(std::vector<std::string> target) {
-            std::cout << "You meet " << target[0] << std::endl;
-        }
-
-        void talk(std::vector<std::string> target) {
             std::vector<NPC> npcs = current_location.getNPCs();
             for (auto npc : npcs) {
                 std::string npc_name = npc.getName();
@@ -272,13 +304,61 @@ class Game {
 
         Location random_location() {
             std::mt19937 engine (std::random_device{}());
-            std::uniform_int_distribution<int> dist(0, locations.size() - 1);
+            std::uniform_int_distribution<int> dist(0, locations.size() - 2);
             int random_index = dist(engine);
             locations[random_index].setVisited();
             for (int x = 0; x < locations.size(); x++){
                 locations[x].updateLocation(locations[random_index]);
             }
+
             return locations[random_index];
+        }
+
+        void steal(std::vector<std::string> target) {
+            std::mt19937 engine (std::random_device{}());
+            std::uniform_int_distribution<int> dist(0, 100);
+            int random_index = dist(engine);
+            std::vector<NPC> npcs_curr = current_location.getNPCs();
+
+            for (int x = 0; x < locations.size(); x++){
+                if (locations[x].getName() == current_location.getName()){
+                    std::vector<NPC> npcs = locations[x].getNPCs();
+                    
+                    for (auto word : target) {
+                        std::cout << word << std::endl;
+                        for (auto npc : npcs) {
+                            std::string npc_name = npc.getName();
+                            std::string npc_item = npc.getItem().getName();
+                            if (toLowercase(word) == toLowercase(npc_item)) {
+                                if (npc.getItem().getName() == "none") {
+                                    std::cout << "You can't steal " << word << " from " << npc.getName() << std::endl;
+                                    return;
+                                }
+                                if (random_index < 20) {
+                                    std::cout << "You stole " << npc.getItem().getName() << " from " << npc.getName() << std::endl;
+                                    items.push_back(npc.getItem());
+                                    for (auto npc_ : npcs_curr) {
+                                        if (npc_.getName() == npc.getName()) {
+                                            npc_.removeItem();
+                                            current_location.updateNPC(npc_);
+                                        }
+                                    }
+                                    npc.removeItem();
+                                    locations[x].updateNPC(npc);
+
+                                    return;
+                                } else {
+                                    std::cout << "YOU HAVE BEEN CAUGHT STEALING FROM " << toUppercase(npc_name) << std::endl;
+                                    current_location = locations[8];
+                                    std::cout << current_location << std::endl;
+                                    return;
+                                }
+                            } 
+                        }
+                    }
+                    std::cout << "You don't see that person here." << std::endl;
+                }
+            }
         }
 
         std::map<std::string, std::function<void(std::vector<std::string>)>> setup_commands() {
@@ -307,18 +387,17 @@ class Game {
 
             commands["meet"] = [this](std::vector<std::string> target) { meet(target); };
             commands["who"] = [this](std::vector<std::string> target) { meet(target); };
-
-
-            commands["talk"] = [this](std::vector<std::string> target) { talk(target); };
-            commands["speak"] = [this](std::vector<std::string> target) { talk(target); };
-            commands["ask"] = [this](std::vector<std::string> target) { talk(target); };
-            commands["chat"] = [this](std::vector<std::string> target) { talk(target); };
+            commands["talk"] = [this](std::vector<std::string> target) { meet(target); };
+            commands["speak"] = [this](std::vector<std::string> target) { meet(target); };
+            commands["chat"] = [this](std::vector<std::string> target) { meet(target); };
 
             commands["take"] = [this](std::vector<std::string> target) { take(target[0]); };
             commands["grab"] = [this](std::vector<std::string> target) { take(target[0]); };
             commands["pick_up"] = [this](std::vector<std::string> target) { take(target[0]); };
             commands["pick"] = [this](std::vector<std::string> target) { take(target[0]); };
 
+            commands["steal"] = [this](std::vector<std::string> target) { steal(target); };
+            commands["rob"] = [this](std::vector<std::string> target) { steal(target); };
 
             commands["help"] = [this](std::vector<std::string> target) { show_help(); };
             commands["commands"] = [this](std::vector<std::string> target) { show_help(); };
@@ -387,6 +466,13 @@ class Game {
         std::string toLowercase(std::string& str) {
             for (auto& c : str) {
                 c = tolower(c);
+            }
+            return str;
+        }
+
+        std::string toUppercase(std::string& str) {
+            for (auto& c : str) {
+                c = toupper(c);
             }
             return str;
         }

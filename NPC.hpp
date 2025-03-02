@@ -4,6 +4,7 @@
 #ifndef         __HPP__NPC__
 #define         __HPP__NPC__
 
+#include "Item.hpp"
 #include <stdexcept>
 #include <iostream>
 #include <string>
@@ -27,6 +28,18 @@ class NPC {
 
             }
 
+            void addItem(Item item) {
+                this->item = item;
+            }
+
+            Item getItem() {
+                return this->item;
+            }
+
+            void removeItem() {
+                this->item = Item("none", "none", 0, 0);
+            }
+
             void setName(std::string name) {
                 this->name = name;
             }
@@ -40,6 +53,9 @@ class NPC {
             }
 
             std::string getDescription() {
+                if (item.getName() != "none") {
+                    return this->description + " They are holding a " + item.getName() + ".";
+                }
                 return this->description;
             }
 
@@ -70,6 +86,7 @@ class NPC {
         private:
             std::string name;
             std::string description;
+            Item item = Item("none", "none", 0, 0);
             std::vector<std::string> messages;
             int messageNum;
 

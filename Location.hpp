@@ -80,6 +80,14 @@ class Location {
                 return npcs;
             }
 
+            void updateNPC (NPC npc) {
+                for (auto& npc_ : npcs) {
+                    if (npc_.getName() == npc.getName()) {
+                        npc_ = npc;
+                    }
+                }
+            }
+
             void addItem(Item item) {
                 items.push_back(item);
             }
