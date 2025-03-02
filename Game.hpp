@@ -22,6 +22,7 @@ class Game {
             this->calories = 500;
             this->gameOver = false;
             this-> current_location = random_location();
+            this->weight = 0;
         }
 
         void create_world() {
@@ -134,6 +135,10 @@ class Game {
         }
 
         void go(std::vector<std::string> target) {
+            if (weight > 30) {
+                std::cout << "Your carrying too much." << std::endl;
+                return;
+            }
             std::map<std::string, Location> neighbors = current_location.get_Locations();   
                 if (neighbors.find(toLowercase(target[0])) != neighbors.end()) {
                     for(int i=0; i<locations.size(); i++){
@@ -194,6 +199,7 @@ class Game {
                     
                     for(int i = 0; i < items.size(); i++) {
                         if (items[i].getName() == item.getName()) {
+                            weight -= item.getWeight();
                             items.erase(items.begin() + i);
                         }
                     }
@@ -232,11 +238,7 @@ class Game {
                 for (int i = 0; i < loc_items.size(); i++){
                     std::string name = loc_items[i].getName();
                     if (toLowercase(name) == toLowercase(target)){
-                        if (loc_items[i].getWeight() + weight > 30) {
-                            std::cout << "You can't carry that much weight." << std::endl;
-                            found = true;
-                            break;
-                        }
+                        weight += loc_items[i].getWeight();
                         items.push_back(loc_items[i]);
                         locations[x].removeItem(loc_items[i]);
                         current_location.removeItem(loc_items[i]);
