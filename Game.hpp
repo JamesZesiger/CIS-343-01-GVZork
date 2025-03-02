@@ -1,5 +1,8 @@
-// Authors: Jared Bradley, Connor Valley, and James Zesiger
-// 2/20/25
+/*
+* Authors: Jared Bradley, Connor Valley, and James Zesiger
+* Date: 2/20/25
+* Description: Header for NPC class
+*/ 
 
 #ifndef         __GAME_HPP__
 #define         __GAME_HPP__
