@@ -64,11 +64,14 @@ class NPC {
                     return "They don't want to talk to you.";
                 }
                 std::string currentMessage = messages[messageNum];
-                messageNum = messageNum + 1;
+                this->messageNum = this->messageNum + 1;
+                if (messageNum >= messages.size()) {
+                    messageNum = 0;
+                }
                 return currentMessage;
             }
 
-            void setMessage(std::string message) {
+            void addMessage(std::string message) {
                 if (message.empty()) {
                     throw std::invalid_argument("Message cannot be blank.");
                 }

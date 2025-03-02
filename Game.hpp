@@ -51,8 +51,29 @@ class Game {
             NPC Warden("Warden", "Prison Warden, stands in the corner watching you.");
 
             //Set NPC messages
-            Bob.setMessage("Bob: Hi, I'm Bob. I'm a Comp-Sci student at GV.");
-            Eve.setMessage("Eve: Hi, I'm Eve. I'm a Comp-Sci student at GV. I love the Kirkoff Center!");
+            Bob.addMessage("Bob: Hi, I'm Bob. I'm a Comp-Sci student at GV.");
+            Bob.addMessage("Bob: I spent all night trying to center a div. I think I understand pain now.");
+            Bob.addMessage("Bob: Graduation is just a myth professors tell freshmen to keep them motivated.");
+
+            Alice.addMessage("Alice: Hi, I'm Alice. I'm a Comp-Sci student at GV. I love the Kirkoff Center!");
+            Alice.addMessage("Alice: Oh, you want to talk? Sure, let me just pause my 14 open terminals and recompile my sanity.");
+            Alice.addMessage("Alice: I was debugging for so long last night that I started seeing syntax errors in my dreams.");
+
+            Charlie.addMessage("Charlie: Hi, I'm Charlie. I'm a Comp-Sci student at GV. I love the Kirkoff Center!");
+            Charlie.addMessage("Charlie: My game is totally going to revolutionize the industry… once I figure out how to fix this null pointer exception.");
+            Charlie.addMessage("Charlie: I spent all night optimizing my game engine. It now runs at 60 FPS instead of 59.");
+
+            David.addMessage("David: Hi, I'm David. I'm a Comp-Sci student at GV. I love the Kirkoff Center!");
+            David.addMessage("David: I finished CS 101, so I basically know everything.");
+            David.addMessage("David: I have a billion-dollar app idea. I just need someone to code it for me.");
+
+            Elf.addMessage("Elf: Hi, I'm an elf. I'm hungry. I need 50 calories to be full.");
+
+            Eve.addMessage("Eve: Hi, I'm Eve. I'm a Comp-Sci student at GV. I hate C.");
+            Eve.addMessage("Eve: My first project is a new programming language. I haven't started yet, but I have a cool name for it.");
+            Eve.addMessage("Eve: If you don't use Vim, we can't be friends.");
+
+            Warden.addMessage("Warden: Go away.");
 
             //Create Locations  
             Location Library("Library", "There's lots of books in here.");
@@ -83,7 +104,6 @@ class Game {
             Charlie.addItem(LoMein);
             David.addItem(Steak);
             Eve.addItem(Pizza);
-            Elf.addItem(Turkey_Leg);
             
             this->locations.push_back(Library);
             this->locations.push_back(Kirkoff);
@@ -125,7 +145,6 @@ class Game {
             this->locations[7].addLocation("west",  std::reference_wrapper<Location>(locations[6]));
             this->locations[7].addLocation("south",  std::reference_wrapper<Location>(locations[1]));
             this->locations[8].addLocation("north",  std::reference_wrapper<Location>(locations[0]));
-
    
         }
 
@@ -283,13 +302,25 @@ class Game {
              * Returns: None
              */
 
-            std::vector<NPC> npcs = current_location.getNPCs();
-            for (auto npc : npcs) {
-                std::string npc_name = npc.getName();
-                for (auto word : target) {
-                    if (toLowercase(word) == toLowercase(npc_name)) {
-                        std::cout << npc.getMessage() << std::endl;
-                        return;
+            std::vector<NPC> npcs_curr = current_location.getNPCs();
+            for (int x = 0; x < locations.size(); x++){
+                if (locations[x].getName() == current_location.getName()){
+                    std::vector<NPC> npcs = locations[x].getNPCs();
+                    for (auto word : target) {
+                        for (auto npc : npcs) {
+                            std::string npc_name = npc.getName();
+                            if (toLowercase(word) == toLowercase(npc_name)) {
+                                for (auto npc_ : npcs_curr) {
+                                    if (npc_.getName() == npc.getName()) {
+                                        std::cout << npc.getMessage() << std::endl;
+                                        npc_.getMessage();
+                                        current_location.updateNPC(npc_);
+                                        locations[x].updateNPC(npc);
+                                        return;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -446,10 +477,11 @@ class Game {
             // give commands
             commands["give"] = [this](std::vector<std::string> target) { give(target); };
             commands["drop"] = [this](std::vector<std::string> target) { give(target); };
-            // steal commands
+            // meet commands
+            commands["talk"] = [this](std::vector<std::string> target) { meet(target); };
             commands["meet"] = [this](std::vector<std::string> target) { meet(target); };
             commands["who"] = [this](std::vector<std::string> target) { meet(target); };
-            // steal commands
+            // take commands
             commands["take"] = [this](std::vector<std::string> target) { take(target); };
             commands["grab"] = [this](std::vector<std::string> target) { take(target); };
             commands["pick_up"] = [this](std::vector<std::string> target) { take(target); };
