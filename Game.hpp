@@ -67,7 +67,7 @@ class Game {
             David.addMessage("David: I finished CS 101, so I basically know everything.");
             David.addMessage("David: I have a billion-dollar app idea. I just need someone to code it for me.");
 
-            Elf.addMessage("Elf: Hi, I'm an elf. I'm hungry. I need 50 calories to be full.");
+            Elf.addMessage("Elf: Hi, I'm an elf. I'm hungry. I need 500 calories to be full.");
 
             Eve.addMessage("Eve: Hi, I'm Eve. I'm a Comp-Sci student at GV. I hate C.");
             Eve.addMessage("Eve: My first project is a new programming language. I haven't started yet, but I have a cool name for it.");
