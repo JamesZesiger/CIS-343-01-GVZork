@@ -159,24 +159,39 @@ class Game {
            for (auto item : items) {
                 std::string name = item.getName();
                 if (toLowercase(name) == toLowercase(target[0])) {
-                    current_location.addItem(item);
+                    for (auto& loc : locations){
+                        if (loc.getName() == current_location.getName()){
+                            loc.addItem(item);
+                            break;
+                        }
+                    }
                     if (current_location.getName() == "Forest"){
-                        std::cout << "You gave the Elf a " << item.getName() << std::endl;
-                        calories -= item.getCalories();
-                        if (calories <= 0){
-                            std::cout << "The elf is full" << std::endl;
-                            quit();
+                        if (item.getCalories() > 0){
+                            std::cout << "You gave the Elf a " << item.getName() << std::endl;
+                            calories -= item.getCalories();
+                            for (auto& loc : locations){
+                                if (loc.getName() == current_location.getName()){
+                                    loc.removeItem(item);
+                                    break;
+                                }
+                            }
+                            std::cout << "the elf needs " << calories << " more calories" << std::endl;
+                            if (calories <= 0){
+                                std::cout << "The elf is full" << std::endl;
+                                gameOver = true;
+                                return;
+                            }
                         }
                         else{
-                            std::cout << "The elf needs " << calories << " more calories" << std::endl;
-                        }
+                            
+                            current_location = random_location();
+                            std::cout << "The elf did not like that item. He teleports you to " << current_location.getName() << std::endl;
+                            std::cout << current_location << std::endl;
+                            return;
+                        } 
                     }
                         
-                    for (int x = 0; x < locations.size(); x++){
-                        if (locations[x].getName() == current_location.getName()){
-                            locations[x].addItem(item);
-                        }
-                    }
+                    
                     for(int i = 0; i < items.size(); i++) {
                         if (items[i].getName() == item.getName()) {
                             items.erase(items.begin() + i);

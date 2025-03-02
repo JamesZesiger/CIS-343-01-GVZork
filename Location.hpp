@@ -85,11 +85,15 @@ class Location {
             }
 
             void removeItem(Item item) {
+                std::string d = item.getName();
                 for(int i = 0; i < items.size(); i++) {
-                    if (items[i].getName() == item.getName()) {
+                    std::string c = items[i].getName();
+                    
+                    if (c == d) {
                         items.erase(items.begin() + i);
                         return;
                     }
+                   
                 }
             }
             
