@@ -337,7 +337,8 @@ class Game {
                 tokens.erase(tokens.begin()); // Remove the command from the tokens
                 if (tokens.size() > 1) {
                     for (int x = 1; x < tokens.size(); x++){
-                        tokens[0] += " " + tokens[x];
+                        tokens[0] += " " + tokens[1];
+                        tokens.erase(tokens.begin() + 1);
                     }
                 }
                 if (commands.find(command) != commands.end()) {
