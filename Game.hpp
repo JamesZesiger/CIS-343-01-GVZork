@@ -183,12 +183,11 @@ class Game {
                         }
                     }
                     std::cout << "You dropped " << item.getName() << std::endl;
+                    return;
                 }
-                else {
-                    std::cout << "You don't have that item." << std::endl;
-                }     
-
+                   
             }
+            std::cout << "You don't have that item." << std::endl;     
             
         }
 
