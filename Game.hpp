@@ -214,17 +214,20 @@ class Game {
            for (int x = 0; x < locations.size(); x++){
             if (locations[x].getName() == current_location.getName()){
                 std::vector<Item> loc_items = locations[x].getItems();
+                bool found = false;
                 for (int i = 0; i < loc_items.size(); i++){
                     std::string name = loc_items[i].getName();
                     if (toLowercase(name) == toLowercase(target)){
                         items.push_back(loc_items[i]);
                         locations[x].removeItem(loc_items[i]);
                         current_location.removeItem(loc_items[i]);
+                        found = true;
                         std::cout << "You picked up " << target << std::endl;
+                        break;
                     }
-                    else{
-                        std::cout << "You can't take that item." << std::endl;
-                    }
+                }
+                if (!found) {
+                    std::cout << "You can't take that item." << std::endl;
                 }
             }
         }
